@@ -5,9 +5,11 @@ import {
   Typography, Card, CardMedia, Button,
 } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-// import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import formatCurrency from '../../utils/formatCurrency';
+import { useAuth } from '../../utils/context/authContext';
+import { createOrder } from '../../utils/data/orderData';
 
 const useStyles = makeStyles({
   root: {
@@ -50,6 +52,8 @@ const useStyles = makeStyles({
 export default function ProductDetails({ product }) {
   const classes = useStyles();
   const [quantity, setQuantity] = useState(1);
+  const { user } = useAuth();
+  const router = useRouter();
 
   const handleIncrement = () => {
     setQuantity(quantity + 1);
@@ -62,9 +66,14 @@ export default function ProductDetails({ product }) {
   };
 
   const addToCart = () => {
-    // Dispatch an action to add the product to the cart
-    console.warn(`Adding ${quantity} of ${product.title} to cart`);
+    const order = {
+      store: product.store.id,
+      paymentMethod: 7,
+      products: [{ id: product.id, quantity }],
+    };
+    createOrder(order, user.id).then(() => router.push(`/users/shoppingCart/${user.id}`));
   };
+
   return (
     <div className={classes.root}>
       <div className={classes.cardContainer}>

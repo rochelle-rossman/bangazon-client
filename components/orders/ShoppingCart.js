@@ -31,7 +31,7 @@ export default function ShoppingCart({ productOrderObj }) {
               <TableCell>
                 <b>Quantity</b>
               </TableCell>
-              <TableCell>
+              <TableCell align="right">
                 <b>Price</b>
               </TableCell>
             </TableRow>
@@ -44,44 +44,33 @@ export default function ShoppingCart({ productOrderObj }) {
                   {product.title}
                 </TableCell>
                 <TableCell>{quantity}</TableCell>
-                <TableCell>
+                <TableCell align="right">
                   {formatCurrency(product.price)} {quantity > 1 ? 'each' : ''}
                 </TableCell>
               </TableRow>
             ))}
-
           </TableBody>
         </Table>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-
-        <TableRow>
-          <TableCell align="right">
-            <b>Total:</b>
-          </TableCell>
-          <TableCell>
-            <b>{formatCurrency(total)}</b>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell align="right">
+        <div>
+          <div style={{ justifyContent: 'flex-end' }}>
+            <b>Total:</b> {formatCurrency(total)}
+          </div>
+          <div style={{ justifyContent: 'flex-end' }}>
             <b>Payment Method:</b>
-          </TableCell>
-          <TableCell>
             <select>
               {payments.map((payment) => (
                 <option key={payment.id} value={payment.id}>
-                  {payment.name}
+                  {payment.label}
                 </option>
               ))}
             </select>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell align="right">
+          </div>
+          <div style={{ justifyContent: 'flex-end' }}>
             <Button>Check Out</Button>
-          </TableCell>
-        </TableRow>
+          </div>
+        </div>
       </div>
     </>
   );
