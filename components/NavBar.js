@@ -14,6 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Image from 'next/image';
 import { Link } from '@mui/material';
+import { useRouter } from 'next/router';
 import { useAuth } from '../utils/context/authContext';
 import { signIn, signOut } from '../utils/auth';
 import Logo from '../assets/logo.png';
@@ -29,6 +30,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 export default function NavBar() {
   const { user } = useAuth();
+  const router = useRouter();
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -109,8 +111,8 @@ export default function NavBar() {
               </MenuItem>
             </Menu>
             {user ? (
-              <IconButton aria-label="cart">
-                <StyledBadge badgeContent={1} color="warning">
+              <IconButton aria-label="cart" onClick={(() => router.push(`/users/shoppingCart/${user.id}`))}>
+                <StyledBadge badgeContent={0} color="warning"> {/* dynamic cart quantity will go here */}
                   <ShoppingCartIcon />
                 </StyledBadge>
               </IconButton>

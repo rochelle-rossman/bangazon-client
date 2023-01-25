@@ -1,16 +1,36 @@
-import { Button } from '@mui/material';
-import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PaymentMethodsTable from '../../components/user/PaymentMethodsTable';
+import UserInfoCard from '../../components/user/UserInfoCard';
+import CustomerOrdersTable from '../../components/orders/CustomerOrderTable';
 import { useAuth } from '../../utils/context/authContext';
+import { getOrdersByCustomer } from '../../utils/data/orderData';
+import { getCustomersPaymentMethods } from '../../utils/data/paymentMethodData';
 
 export default function UserView() {
   const { user } = useAuth();
-  const router = useRouter();
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [orders, setOrders] = useState([]);
+
+  const getThePaymentMethods = () => {
+    getCustomersPaymentMethods(user.id).then((methods) => {
+      setPaymentMethods(methods);
+    });
+  };
+
+  useEffect(() => {
+    getCustomersPaymentMethods(user.id).then((methods) => {
+      setPaymentMethods(methods);
+    });
+    getOrdersByCustomer(user.id).then(setOrders);
+  }, [user.id]);
+
   return (
-    <div>
-      <Button onClick={() => (router.push(`/users/edit/${user.id}`))}>
-        Update Account Info
-      </Button>
+    <div className="userView">
+      <div className="userInfoCard-orderHistory-container">
+        <UserInfoCard className="userInfoCard" userObj={user} />
+        <CustomerOrdersTable className="orderHistory" orders={orders} />
+      </div>
+      <PaymentMethodsTable className="paymentMethods" paymentMethods={paymentMethods} onUpdate={getThePaymentMethods} />
     </div>
   );
 }
