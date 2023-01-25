@@ -40,6 +40,29 @@ const getProductOrderByCustomer = (customerId) => new Promise((resolve, reject) 
     .catch(reject);
 });
 
+const createOrder = (order, userId) => new Promise((resolve, reject) => {
+  const orderObj = {
+    store: order.store,
+    customer: userId,
+    payment_method: order.paymentMethod,
+    products: order.products,
+  };
+  fetch(`${dbUrl}/orders`, {
+    method: 'POST',
+    body: JSON.stringify(orderObj),
+    headers: { 'content-type': 'application/json' },
+  })
+    .then((response) => resolve(response.json()))
+    .catch(reject);
+});
+
+const deleteOrder = (orderId) => new Promise((resolve, reject) => {
+  fetch(`${dbUrl}/orders/${orderId}`, {
+    method: 'DELETE',
+  }).then(resolve)
+    .catch(reject);
+});
+
 export {
-  getOrdersByCustomer, getOrdersByStore, getProductOrder, getProductOrderByCustomer,
+  getOrdersByCustomer, getOrdersByStore, getProductOrder, getProductOrderByCustomer, createOrder, deleteOrder,
 };
