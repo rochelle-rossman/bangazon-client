@@ -21,7 +21,8 @@ export default function CustomerOrdersTable({ orders }) {
             </TableCell>
           </TableRow>
         </TableHead>
-        {orders.status === 'complete' ? (
+        {orders.status === 'complete'
+          && (
           <TableBody>
             {orders.map((order) => (
               <TableRow key={order.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -33,7 +34,7 @@ export default function CustomerOrdersTable({ orders }) {
               </TableRow>
             ))}
           </TableBody>
-        ) : ''}
+          )}
       </Table>
     </TableContainer>
   );

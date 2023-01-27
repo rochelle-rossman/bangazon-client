@@ -11,6 +11,15 @@ const getOrdersByCustomer = (customerId) => new Promise((resolve, reject) => {
     .catch((error) => reject(error));
 });
 
+const getOpenOrdersByCustomer = (customerId) => new Promise((resolve, reject) => {
+  fetch(`${dbUrl}/orders?customer=${customerId}&status=in-progress`)
+    .then((response) => response.json())
+    .then((data) => {
+      resolve(convertKeysToCamelCase(data));
+    })
+    .catch((error) => reject(error));
+});
+
 const getOrdersByStore = (storeId) => new Promise((resolve, reject) => {
   fetch(`${dbUrl}/orders?store=${storeId}`)
     .then((response) => response.json())
@@ -56,6 +65,21 @@ const createOrder = (order, userId) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
+const updateOrder = (orderId, order) => new Promise((resolve, reject) => {
+  const orderObj = {
+    status: order.status,
+    // payment_method: order.paymentMethod,
+    products: order.products,
+  };
+  fetch(`${dbUrl}/orders/${orderId}`, {
+    method: 'PUT',
+    body: JSON.stringify(orderObj),
+    headers: { 'Content-Type': 'application/json' },
+  })
+    .then((response) => resolve(response))
+    .catch(reject);
+});
+
 const deleteOrder = (orderId) => new Promise((resolve, reject) => {
   fetch(`${dbUrl}/orders/${orderId}`, {
     method: 'DELETE',
@@ -64,5 +88,5 @@ const deleteOrder = (orderId) => new Promise((resolve, reject) => {
 });
 
 export {
-  getOrdersByCustomer, getOrdersByStore, getProductOrder, getProductOrderByCustomer, createOrder, deleteOrder,
+  getOrdersByCustomer, getOrdersByStore, getProductOrder, getProductOrderByCustomer, createOrder, deleteOrder, updateOrder, getOpenOrdersByCustomer,
 };

@@ -13,6 +13,6 @@ export default function ProductDetailView() {
   }, [router, productId]);
 
   return (
-    <ProductDetails product={product} />
+    <ProductDetails productObj={product} />
   );
 }
