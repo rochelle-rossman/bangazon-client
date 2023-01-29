@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { TextField, Button, FormControl } from '@mui/material';
+import { Form } from 'react-bootstrap';
+import {
+  TextField, Button, FormControl,
+} from '@mui/material';
 import { useRouter } from 'next/router';
 import { updatePaymentMethod, createPaymentMethod, getSinglePaymentMethod } from '../../utils/data/paymentMethodData';
 import { useAuth } from '../../utils/context/authContext';
@@ -40,17 +43,17 @@ function PaymentMethodForm({ paymentMethod }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <FormControl>
-        <TextField onChange={handleChange} name="label" label="Label" variant="outlined" fullWidth value={formData.label} />
-        <TextField onChange={handleChange} name="cardNumber" label="Card Number" variant="outlined" fullWidth value={formData.cardNumber} />
-        <TextField onChange={handleChange} name="expirationDate" label="Expiration Date" variant="outlined" fullWidth value={formData.expirationDate} />
+    <Form onSubmit={handleSubmit}>
+      <FormControl fullWidth>
+        <TextField sx={{ mb: 1.5 }} onChange={handleChange} name="label" label="Label" variant="outlined" value={formData.label} />
+        <TextField sx={{ mb: 1.5 }} onChange={handleChange} name="cardNumber" label="Card Number" variant="outlined" value={formData.cardNumber} />
+        <TextField sx={{ mb: 1.5 }} onChange={handleChange} name="expirationDate" label="Expiration Date" variant="outlined" value={formData.expirationDate} />
 
         <Button type="submit" variant="contained" color="primary">
           Submit
         </Button>
       </FormControl>
-    </form>
+    </Form>
   );
 }
 

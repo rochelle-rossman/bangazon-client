@@ -3,7 +3,7 @@ import PaymentMethodsTable from '../../components/user/PaymentMethodsTable';
 import UserInfoCard from '../../components/user/UserInfoCard';
 import CustomerOrdersTable from '../../components/orders/CustomerOrderTable';
 import { useAuth } from '../../utils/context/authContext';
-import { getOrdersByCustomer } from '../../utils/data/orderData';
+import { getCompleteOrdersByCustomer } from '../../utils/data/orderData';
 import { getCustomersPaymentMethods } from '../../utils/data/paymentMethodData';
 
 export default function UserView() {
@@ -21,7 +21,7 @@ export default function UserView() {
     getCustomersPaymentMethods(user.id).then((methods) => {
       setPaymentMethods(methods);
     });
-    getOrdersByCustomer(user.id).then(setOrders);
+    getCompleteOrdersByCustomer(user.id).then(setOrders);
   }, [user.id]);
 
   return (

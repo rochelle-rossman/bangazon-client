@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import formatCurrency from '../../utils/formatCurrency';
 import { useAuth } from '../../utils/context/authContext';
-import { updateOrder, getOpenOrdersByCustomer } from '../../utils/data/orderData';
+import { updateOrder, getOpenOrdersByCustomer, createOrder } from '../../utils/data/orderData';
 
 const useStyles = makeStyles({
   root: {
@@ -71,20 +71,32 @@ export default function ProductDetails({ productObj }) {
       if (openOrders.length > 0) {
         // check if product is already in open order
         const openOrder = openOrders[0];
-        const productInOrder = openOrder.products.find((product) => product.id === productObj.id);
-        if (productInOrder) {
+        const payload = { products: [], status: 'in-progress' };
+        if (openOrder.products && openOrder.products.find((product) => product.id === productObj.id)) {
+          // find the product in the open order
+          const productInOrder = openOrder.products.find((product) => product.id === productObj.id);
           // update product quantity in open order
           productInOrder.quantity += quantity;
-          updateOrder(openOrder.id, openOrder).then(() => {
-            router.push(`/users/shoppingCart/${user.id}`);
-          });
+          payload.products = openOrder.products;
         } else {
           // add product to open order
+          openOrder.products = openOrder.products ? openOrder.products : [];
           openOrder.products.push({ id: productObj.id, quantity });
-          updateOrder(openOrder.id, openOrder).then(() => {
-            router.push(`/users/shoppingCart/${user.id}`);
-          });
+          payload.products = openOrder.products;
         }
+        // send updated product array to server
+        updateOrder(openOrder.id, payload).then(() => {
+          router.push(`/users/shoppingCart/${user.id}`);
+        });
+      } else {
+        // create new order
+        const newOrder = {
+          store: productObj.store.id,
+          products: [{ id: productObj.id, quantity }],
+        };
+        createOrder(newOrder, user.id).then(() => {
+          router.push(`/users/shoppingCart/${user.id}`);
+        });
       }
     });
   };

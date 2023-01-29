@@ -7,7 +7,7 @@ import formatCurrency from '../../utils/formatCurrency';
 export default function CustomerOrdersTable({ orders }) {
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+      <Table sx={{ minWidth: 350 }} size="small">
         <TableHead>
           <TableRow>
             <TableCell>
@@ -21,20 +21,17 @@ export default function CustomerOrdersTable({ orders }) {
             </TableCell>
           </TableRow>
         </TableHead>
-        {orders.status === 'complete'
-          && (
-          <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component="th" scope="row">
-                  {order.id}
-                </TableCell>
-                <TableCell align="right">{order.status}</TableCell>
-                <TableCell align="right">{formatCurrency(order.total)}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-          )}
+        <TableBody>
+          {orders.map((order) => (
+            <TableRow key={order.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              <TableCell component="th" scope="row">
+                {order.id}
+              </TableCell>
+              <TableCell align="right">{order.status}</TableCell>
+              <TableCell align="right">{formatCurrency(order.total)}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
       </Table>
     </TableContainer>
   );

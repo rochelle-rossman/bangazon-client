@@ -63,8 +63,7 @@ export default function NavBar() {
               color: 'inherit',
               textDecoration: 'none',
             }}
-          >BANGAzON
-          </Typography>
+          />
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} />
 
