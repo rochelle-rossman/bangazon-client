@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import formatCurrency from '../../utils/formatCurrency';
 import { useAuth } from '../../utils/context/authContext';
-import { createOrder } from '../../utils/data/orderData';
+import { updateOrder, getOpenOrdersByCustomer, createOrder } from '../../utils/data/orderData';
 
 const useStyles = makeStyles({
   root: {
@@ -49,7 +49,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ProductDetails({ product }) {
+export default function ProductDetails({ productObj }) {
   const classes = useStyles();
   const [quantity, setQuantity] = useState(1);
   const { user } = useAuth();
@@ -66,31 +66,58 @@ export default function ProductDetails({ product }) {
   };
 
   const addToCart = () => {
-    const order = {
-      store: product.store.id,
-      paymentMethod: 7,
-      products: [{ id: product.id, quantity }],
-    };
-    createOrder(order, user.id).then(() => router.push(`/users/shoppingCart/${user.id}`));
+    getOpenOrdersByCustomer(user.id).then((openOrders) => {
+      // check if open orders exist
+      if (openOrders.length > 0) {
+        // check if product is already in open order
+        const openOrder = openOrders[0];
+        const payload = { products: [], status: 'in-progress' };
+        if (openOrder.products && openOrder.products.find((product) => product.id === productObj.id)) {
+          // find the product in the open order
+          const productInOrder = openOrder.products.find((product) => product.id === productObj.id);
+          // update product quantity in open order
+          productInOrder.quantity += quantity;
+          payload.products = openOrder.products;
+        } else {
+          // add product to open order
+          openOrder.products = openOrder.products ? openOrder.products : [];
+          openOrder.products.push({ id: productObj.id, quantity });
+          payload.products = openOrder.products;
+        }
+        // send updated product array to server
+        updateOrder(openOrder.id, payload).then(() => {
+          router.push(`/users/shoppingCart/${user.id}`);
+        });
+      } else {
+        // create new order
+        const newOrder = {
+          store: productObj.store.id,
+          products: [{ id: productObj.id, quantity }],
+        };
+        createOrder(newOrder, user.id).then(() => {
+          router.push(`/users/shoppingCart/${user.id}`);
+        });
+      }
+    });
   };
 
   return (
     <div className={classes.root}>
       <div className={classes.cardContainer}>
         <Typography gutterBottom variant="h4">
-          {product.title}
+          {productObj.title}
         </Typography>
-        <Link href={`../../stores/${product.store?.id}`} passHref>
-          <Typography variant="h5">{product.store?.name}</Typography>
+        <Link href={`../../stores/${productObj.store?.id}`} passHref>
+          <Typography variant="h5">{productObj.store?.name}</Typography>
         </Link>
-        <Card className={classes.card}>{typeof product.image === 'string' && <CardMedia className={classes.media} image={product.image} title={product.title} />}</Card>
+        <Card className={classes.card}>{typeof productObj.image === 'string' && <CardMedia className={classes.media} image={productObj.image} title={productObj.title} />}</Card>
       </div>
       <div className={classes.descriptionContainer}>
         <Typography variant="body" color="textSecondary">
-          {product.description}
+          {productObj.description}
         </Typography>
         <div className={classes.quantity}>
-          <Typography variant="h5">{formatCurrency(product.price)}</Typography>
+          <Typography variant="h5">{formatCurrency(productObj.price)}</Typography>
           <Button onClick={handleDecrement}>-</Button>
           <span>{quantity}</span>
           <Button onClick={handleIncrement}>+</Button>
@@ -104,7 +131,7 @@ export default function ProductDetails({ product }) {
 }
 
 ProductDetails.propTypes = {
-  product: PropTypes.shape({
+  productObj: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,
     description: PropTypes.string,

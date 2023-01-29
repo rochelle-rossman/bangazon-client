@@ -19,7 +19,7 @@ export default function PaymentMethodsTable({ paymentMethods, onUpdate }) {
   };
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+      <Table sx={{ minWidth: 650 }} size="small">
         <TableHead>
           <TableRow>
             <TableCell>
@@ -31,6 +31,7 @@ export default function PaymentMethodsTable({ paymentMethods, onUpdate }) {
             <TableCell align="right">
               <b>Expiration Date</b>
             </TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -42,18 +43,20 @@ export default function PaymentMethodsTable({ paymentMethods, onUpdate }) {
               <TableCell align="right">{method.card_number}</TableCell>
               <TableCell align="right">{method.expiration_date}</TableCell>
               <TableCell>
-                <Button onClick={() => editPaymentMethod(method)}>
-                  <EditIcon style={{ color: 'green' }} />
+                <Button color="success" onClick={() => editPaymentMethod(method)}>
+                  <EditIcon />
                 </Button>
-                <Button onClick={() => deletePayment(method)}>
-                  <DeleteIcon style={{ color: 'red' }} />
+                <Button color="error" onClick={() => deletePayment(method)}>
+                  <DeleteIcon />
                 </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <Button onClick={() => router.push('../users/paymentMethods/new')}>Add A New Payment Method</Button>
+      <TableCell>
+        <Button onClick={() => router.push('../users/paymentMethods/new')}>Add A New Payment Method</Button>
+      </TableCell>
     </TableContainer>
   );
 }

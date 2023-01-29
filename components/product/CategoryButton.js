@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 export default function CategoryButton({ category, onClick }) {
   return (
-    <Button onClick={onClick} variant="outlined" shape="rounded" className="categoryButton">
+    <Button onClick={onClick} variant="outlined" shape="rounded" style={{ margin: '0 10px 10px 0' }}>
       {category.label}
     </Button>
   );
