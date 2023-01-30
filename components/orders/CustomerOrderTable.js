@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types';
 import {
-  Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper,
+  Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, Button,
 } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
+import { useRouter } from 'next/router';
 import formatCurrency from '../../utils/formatCurrency';
 
 export default function CustomerOrdersTable({ orders }) {
+  const router = useRouter();
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 350 }} size="small">
@@ -25,7 +28,9 @@ export default function CustomerOrdersTable({ orders }) {
           {orders.map((order) => (
             <TableRow key={order.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               <TableCell component="th" scope="row">
-                {order.id}
+                <Tooltip title="View Order Details" placement="right">
+                  <Button onClick={() => router.push(`/users/orders/${order.id}`)}>{order.id}</Button>
+                </Tooltip>
               </TableCell>
               <TableCell align="right">{order.status}</TableCell>
               <TableCell align="right">{formatCurrency(order.total)}</TableCell>

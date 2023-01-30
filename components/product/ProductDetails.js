@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import {
-  Typography, Card, CardMedia, Button,
+  Typography, Card, CardMedia, Button, Badge,
 } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { useRouter } from 'next/router';
@@ -56,7 +56,9 @@ export default function ProductDetails({ productObj }) {
   const router = useRouter();
 
   const handleIncrement = () => {
-    setQuantity(quantity + 1);
+    if (quantity + 1 <= productObj.inventory) {
+      setQuantity(quantity + 1);
+    }
   };
 
   const handleDecrement = () => {
@@ -104,11 +106,9 @@ export default function ProductDetails({ productObj }) {
   return (
     <div className={classes.root}>
       <div className={classes.cardContainer}>
-        <Typography gutterBottom variant="h4">
-          {productObj.title}
-        </Typography>
+        <h4>{productObj.title}</h4>
         <Link href={`../../stores/${productObj.store?.id}`} passHref>
-          <Typography variant="h5">{productObj.store?.name}</Typography>
+          <h5>{productObj.store?.name}</h5>
         </Link>
         <Card className={classes.card}>{typeof productObj.image === 'string' && <CardMedia className={classes.media} image={productObj.image} title={productObj.title} />}</Card>
       </div>
@@ -118,12 +118,24 @@ export default function ProductDetails({ productObj }) {
         </Typography>
         <div className={classes.quantity}>
           <Typography variant="h5">{formatCurrency(productObj.price)}</Typography>
-          <Button onClick={handleDecrement}>-</Button>
-          <span>{quantity}</span>
-          <Button onClick={handleIncrement}>+</Button>
-          <Button onClick={addToCart}>
+          {productObj.inventory > 0 ? (
+            <>
+              <Button disabled={quantity === 1} onClick={handleDecrement}>
+                -
+              </Button>
+              <span>{quantity}</span>
+              <Button disabled={quantity + 1 > productObj.inventory} onClick={handleIncrement}>
+                +
+              </Button>
+            </>
+          ) : (
+            ''
+          )}
+          <Button onClick={addToCart} disabled={productObj.inventory <= 0}>
             <AddShoppingCartIcon fontSize="large" />
           </Button>
+          {productObj.inventory <= 0 ? <Badge badgeContent="Out of Stock" /> : ''}
+          {productObj.inventory <= 5 && productObj.inventory > 0 ? <Badge color="secondary" badgeContent="Low Stock" /> : ''}
         </div>
       </div>
     </div>
@@ -142,5 +154,6 @@ ProductDetails.propTypes = {
     price: PropTypes.number,
     productType: PropTypes.string,
     image: PropTypes.string,
+    inventory: PropTypes.number,
   }).isRequired,
 };

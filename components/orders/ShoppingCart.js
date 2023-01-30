@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
-  Table, TableBody, TableCell, TableRow, TableHead, Button, Select, FormControl, MenuItem,
+  Table, TableBody, TableCell, TableRow, TableHead, Button, Select, FormControl, MenuItem, CardActionArea,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { updateOrder } from '../../utils/data/orderData';
@@ -65,13 +65,17 @@ export default function ShoppingCart({
                 {productOrderObj.map(({ product, quantity }) => (
                   <TableRow key={product.id}>
                     <TableCell>
-                      <img src={product.image} alt={product.title} width={100} height={100} />
-                      {product.title}
+                      <CardActionArea onClick={() => router.push(`/products/${product.id}`)}>
+                        <img src={product.image} alt={product.title} width={100} height={100} />
+                        {product.title}
+                      </CardActionArea>
                     </TableCell>
                     <TableCell align="center">
                       <Button onClick={() => handleDecrement(product.id)}>-</Button>
                       {quantity}
-                      <Button onClick={() => handleIncrement(product.id)}>+</Button>
+                      <Button onClick={() => handleIncrement(product.id)} disabled={quantity >= product.inventory}>
+                        +
+                      </Button>
                     </TableCell>
                     <TableCell align="right">
                       {formatCurrency(product.price)} {quantity > 1 ? 'each' : ''}
@@ -111,12 +115,18 @@ export default function ShoppingCart({
           </div>
         </>
       ) : (
-        <div style={{
-          display: 'flex', justifyContent: 'center', margin: '10px', flexWrap: 'wrap',
-        }}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            margin: '10px',
+            flexWrap: 'wrap',
+          }}
         >
           <h2>NO ITEMS HAVE BEEN ADDED TO YOUR CART</h2>
-          <Button variant="outlined" color="success" onClick={() => router.push('/')}>Continue Shopping</Button>
+          <Button variant="outlined" color="success" onClick={() => router.push('/')}>
+            Continue Shopping
+          </Button>
         </div>
       )}
     </>

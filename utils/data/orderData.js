@@ -11,6 +11,15 @@ const getOrdersByCustomer = (customerId) => new Promise((resolve, reject) => {
     .catch((error) => reject(error));
 });
 
+const getSingleOrder = (orderId) => new Promise((resolve, reject) => {
+  fetch(`${dbUrl}/orders/${orderId}`)
+    .then((response) => response.json())
+    .then((data) => {
+      resolve(convertKeysToCamelCase(data));
+    })
+    .catch((error) => reject(error));
+});
+
 const getOpenOrdersByCustomer = (customerId) => new Promise((resolve, reject) => {
   fetch(`${dbUrl}/orders?customer=${customerId}&status=in-progress`)
     .then((response) => response.json())
@@ -120,5 +129,5 @@ const deleteProductOrder = (productOrderId) => new Promise((resolve, reject) => 
 });
 
 export {
-  getOrdersByCustomer, getOrdersByStore, getProductOrder, getOpenProductOrderByCustomer, createOrder, deleteOrder, updateOrder, getOpenOrdersByCustomer, updateProductOrder, deleteProductOrder, getCompleteOrdersByCustomer,
+  getOrdersByCustomer, getOrdersByStore, getProductOrder, getOpenProductOrderByCustomer, createOrder, deleteOrder, updateOrder, getOpenOrdersByCustomer, updateProductOrder, deleteProductOrder, getCompleteOrdersByCustomer, getSingleOrder,
 };
