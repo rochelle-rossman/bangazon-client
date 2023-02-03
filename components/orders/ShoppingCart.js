@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
-  Table, TableBody, TableCell, TableRow, TableHead, Button, Select, FormControl, MenuItem, CardActionArea,
+  Table, TableBody, TableCell, TableRow, TableHead, Button, Select, FormControl, MenuItem, CardActionArea, CardMedia, Typography,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { updateOrder } from '../../utils/data/orderData';
@@ -48,7 +48,7 @@ export default function ShoppingCart({
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell align="center">
+                  <TableCell align="left">
                     <b>Product</b>
                   </TableCell>
                   <TableCell align="center">
@@ -66,8 +66,8 @@ export default function ShoppingCart({
                   <TableRow key={product.id}>
                     <TableCell align="center">
                       <CardActionArea onClick={() => router.push(`/products/${product.id}`)}>
-                        <img src={product.image} alt={product.title} width={100} height={100} />
-                        <div style={{ margin: '10px' }}>{product.title}</div>
+                        <Typography align="left" style={{ margin: '10px' }}>{product.title}</Typography>
+                        <CardMedia style={{ height: 100, width: 100, backgroundSize: 'contain' }} image={product.image} title={product.title} />
                       </CardActionArea>
                     </TableCell>
                     <TableCell align="right">
@@ -83,7 +83,7 @@ export default function ShoppingCart({
                       {formatCurrency(product.price)} {quantity > 1 ? 'each' : ''}
                     </TableCell>
                     <TableCell align="center">
-                      <Button color="error" size="small" fontSize="small" onClick={() => handleDelete(productOrderObj[0].id)}>
+                      <Button color="error" size="small" fontSize="small" onClick={() => handleDelete(product.id)}>
                         <DeleteIcon />
                       </Button>
                     </TableCell>
@@ -144,31 +144,10 @@ ShoppingCart.propTypes = {
       product: PropTypes.shape({
         id: PropTypes.number,
         title: PropTypes.string,
-        // description: PropTypes.string,
         price: PropTypes.number,
         inventory: PropTypes.number,
         image: PropTypes.string,
-        // store: PropTypes.shape({
-        //   id: PropTypes.number,
-        //   name: PropTypes.string,
-        // }),
-        // product_type: PropTypes.shape({
-        //   id: PropTypes.number,
-        //   label: PropTypes.string,
-        // }),
       }),
-      // order: PropTypes.shape({
-      // id: PropTypes.number,
-      // ordered_on: PropTypes.string,
-      // status: PropTypes.string,
-      // store: PropTypes.shape({
-      //   id: PropTypes.number,
-      //   name: PropTypes.string,
-      // }),
-      // customer: PropTypes.number,
-      // payment_method: PropTypes.number,
-      // products: PropTypes.arrayOf(PropTypes.number),
-      // }),
       quantity: PropTypes.number,
     }),
   ).isRequired,
