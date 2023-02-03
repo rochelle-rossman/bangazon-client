@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -18,12 +18,12 @@ export default function PaymentMethodsTable({ paymentMethods, onUpdate }) {
     router.push(`../../users/paymentMethods/edit/${paymentMethod.id}`);
   };
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small">
+    <TableContainer>
+      <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>
-              <b>Payment Method Label</b>
+              <b>Payment Method</b>
             </TableCell>
             <TableCell align="right">
               <b>Card Number</b>
@@ -36,8 +36,8 @@ export default function PaymentMethodsTable({ paymentMethods, onUpdate }) {
         </TableHead>
         <TableBody>
           {paymentMethods.map((method) => (
-            <TableRow key={method.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-              <TableCell component="th" scope="row">
+            <TableRow key={method.id}>
+              <TableCell>
                 {method.label}
               </TableCell>
               <TableCell align="right">{method.card_number}</TableCell>
@@ -54,9 +54,9 @@ export default function PaymentMethodsTable({ paymentMethods, onUpdate }) {
           ))}
         </TableBody>
       </Table>
-      <TableCell>
+      <TableBody>
         <Button onClick={() => router.push('../users/paymentMethods/new')}>Add A New Payment Method</Button>
-      </TableCell>
+      </TableBody>
     </TableContainer>
   );
 }

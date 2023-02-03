@@ -64,18 +64,20 @@ export default function ShoppingCart({
               <TableBody>
                 {productOrderObj.map(({ product, quantity }) => (
                   <TableRow key={product.id}>
-                    <TableCell>
+                    <TableCell align="center">
                       <CardActionArea onClick={() => router.push(`/products/${product.id}`)}>
                         <img src={product.image} alt={product.title} width={100} height={100} />
-                        {product.title}
+                        <div style={{ margin: '10px' }}>{product.title}</div>
                       </CardActionArea>
                     </TableCell>
-                    <TableCell align="center">
-                      <Button onClick={() => handleDecrement(product.id)}>-</Button>
-                      {quantity}
-                      <Button onClick={() => handleIncrement(product.id)} disabled={quantity >= product.inventory}>
-                        +
-                      </Button>
+                    <TableCell align="right">
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Button onClick={() => handleDecrement(product.id)}>-</Button>
+                        {quantity}
+                        <Button onClick={() => handleIncrement(product.id)} disabled={quantity >= product.inventory}>
+                          +
+                        </Button>
+                      </div>
                     </TableCell>
                     <TableCell align="right">
                       {formatCurrency(product.price)} {quantity > 1 ? 'each' : ''}
@@ -97,7 +99,7 @@ export default function ShoppingCart({
               </div>
               <div style={{ justifyContent: 'flex-end', margin: '15px' }}>
                 <FormControl fullWidth required>
-                  <Select value={selectedPaymentMethod.id} onChange={(e) => setSelectedPaymentMethod(payments.find((payment) => payment.id === e.target.value))}>
+                  <Select value={selectedPaymentMethod.id || ''} onChange={(e) => setSelectedPaymentMethod(payments.find((payment) => payment.id === e.target.value))}>
                     {payments.map((payment) => (
                       <MenuItem key={payment.id} value={payment.id}>
                         {payment.label}
@@ -107,7 +109,7 @@ export default function ShoppingCart({
                 </FormControl>
               </div>
               <div style={{ justifyContent: 'flex-end' }}>
-                <Button variant="outlined" color="success" onClick={() => handleCheckOut()}>
+                <Button disabled={!selectedPaymentMethod.id} variant="outlined" color="success" onClick={() => handleCheckOut()}>
                   Check Out
                 </Button>
               </div>
@@ -121,6 +123,8 @@ export default function ShoppingCart({
             justifyContent: 'center',
             margin: '10px',
             flexWrap: 'wrap',
+            flexDirection: 'column',
+            textAlign: 'center',
           }}
         >
           <h2>NO ITEMS HAVE BEEN ADDED TO YOUR CART</h2>
@@ -140,22 +144,31 @@ ShoppingCart.propTypes = {
       product: PropTypes.shape({
         id: PropTypes.number,
         title: PropTypes.string,
-        description: PropTypes.string,
+        // description: PropTypes.string,
         price: PropTypes.number,
         inventory: PropTypes.number,
         image: PropTypes.string,
-        store: PropTypes.number,
-        product_type: PropTypes.number,
+        // store: PropTypes.shape({
+        //   id: PropTypes.number,
+        //   name: PropTypes.string,
+        // }),
+        // product_type: PropTypes.shape({
+        //   id: PropTypes.number,
+        //   label: PropTypes.string,
+        // }),
       }),
-      order: PropTypes.shape({
-        id: PropTypes.number,
-        ordered_on: PropTypes.string,
-        status: PropTypes.string,
-        store: PropTypes.number,
-        customer: PropTypes.number,
-        payment_method: PropTypes.number,
-        products: PropTypes.arrayOf(PropTypes.number),
-      }),
+      // order: PropTypes.shape({
+      // id: PropTypes.number,
+      // ordered_on: PropTypes.string,
+      // status: PropTypes.string,
+      // store: PropTypes.shape({
+      //   id: PropTypes.number,
+      //   name: PropTypes.string,
+      // }),
+      // customer: PropTypes.number,
+      // payment_method: PropTypes.number,
+      // products: PropTypes.arrayOf(PropTypes.number),
+      // }),
       quantity: PropTypes.number,
     }),
   ).isRequired,

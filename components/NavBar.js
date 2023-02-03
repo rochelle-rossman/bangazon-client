@@ -5,8 +5,6 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
-import Badge from '@mui/material/Badge';
-import { styled } from '@mui/material/styles';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Container from '@mui/material/Container';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -18,15 +16,6 @@ import { useRouter } from 'next/router';
 import { useAuth } from '../utils/context/authContext';
 import { signIn, signOut } from '../utils/auth';
 import Logo from '../assets/logo.png';
-
-const StyledBadge = styled(Badge)(({ theme }) => ({
-  '& .MuiBadge-badge': {
-    right: -3,
-    top: 13,
-    border: `2px solid ${theme.palette.background.paper}`,
-    padding: '0 4px',
-  },
-}));
 
 export default function NavBar() {
   const { user } = useAuth();
@@ -43,7 +32,7 @@ export default function NavBar() {
 
   return (
     <AppBar position="static" color="default">
-      <Container maxWidth="xl">
+      <Container maxWidth="100%">
         <Toolbar disableGutters>
           <Link href="/">
             <Image height={50} width={70} className="logo" alt="Bangazon Logo" src={Logo} />
@@ -89,12 +78,19 @@ export default function NavBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {user ? (
-                <MenuItem>
-                  <Typography>
-                    <Link href={`/users/${user.id}`}>Account Details</Link>
-                  </Typography>
-                </MenuItem>
+              {user.id ? (
+                <div>
+                  <MenuItem>
+                    <Typography>
+                      <Link href={`/users/${user.id}`}>Account Details</Link>
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem>
+                    <Typography>
+                      <Link href={`/users/store/${user.id}`}>My Store</Link>
+                    </Typography>
+                  </MenuItem>
+                </div>
               ) : (
                 ''
               )}
@@ -110,11 +106,9 @@ export default function NavBar() {
                 )}
               </MenuItem>
             </Menu>
-            {user ? (
+            {user.id ? (
               <IconButton aria-label="cart" onClick={(() => router.push(`/users/shoppingCart/${user.id}`))}>
-                <StyledBadge badgeContent={0} color="warning"> {/* dynamic cart quantity will go here */}
-                  <ShoppingCartIcon />
-                </StyledBadge>
+                <ShoppingCartIcon />
               </IconButton>
             ) : (
               ''

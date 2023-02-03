@@ -11,15 +11,11 @@ const useStyles = makeStyles({
   root: {
     position: 'relative',
     maxWidth: 345,
+    overflow: 'auto',
   },
   media: {
     height: 240,
-  },
-  button: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    maxHeight: 20,
+    backgroundSize: 'contain',
   },
 });
 
@@ -31,10 +27,10 @@ export default function ProductCard({ product }) {
     <Card className={classes.root}>
       <CardActionArea onClick={() => router.push(`../products/${product.id}`)}>
         <CardMedia className={classes.media} image={product?.image} title={product.title} />
-        <Typography style={{ fontFamily: 'monospace' }} gutterBottom variant="h5" component="h2">
+        <Typography gutterBottom variant="h5" component="h2">
           {product.title}
         </Typography>
-        <Typography style={{ fontFamily: 'monospace' }} gutterBottom variant="h6" component="h2">
+        <Typography gutterBottom variant="h6" component="h2">
           {formatCurrency(product.price)}
         </Typography>
         <CardContent>
@@ -57,7 +53,10 @@ ProductCard.propTypes = {
       name: PropTypes.string,
     }),
     price: PropTypes.number,
-    productType: PropTypes.string,
+    productType: PropTypes.shape({
+      id: PropTypes.number,
+      label: PropTypes.string,
+    }),
     image: PropTypes.string,
   }).isRequired,
 };

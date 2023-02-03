@@ -19,6 +19,7 @@ const useStyles = makeStyles({
   },
   media: {
     height: 500,
+    backgroundSize: 'contain',
   },
   button: {
     margin: '10px 0',
@@ -77,7 +78,7 @@ export default function ProductDetails({ productObj }) {
         if (openOrder.products && openOrder.products.find((product) => product.id === productObj.id)) {
           // find the product in the open order
           const productInOrder = openOrder.products.find((product) => product.id === productObj.id);
-          // update product quantity in open order
+          // update product quantity in order
           productInOrder.quantity += quantity;
           payload.products = openOrder.products;
         } else {
@@ -86,7 +87,7 @@ export default function ProductDetails({ productObj }) {
           openOrder.products.push({ id: productObj.id, quantity });
           payload.products = openOrder.products;
         }
-        // send updated product array to server
+        // send updated product array
         updateOrder(openOrder.id, payload).then(() => {
           router.push(`/users/shoppingCart/${user.id}`);
         });
@@ -106,9 +107,10 @@ export default function ProductDetails({ productObj }) {
   return (
     <div className={classes.root}>
       <div className={classes.cardContainer}>
-        <h4>{productObj.title}</h4>
+        <h3>{productObj.title}</h3>
+        <h5>{productObj.productType?.label}</h5>
         <Link href={`../../stores/${productObj.store?.id}`} passHref>
-          <h5>{productObj.store?.name}</h5>
+          <h5 style={{ color: '#0D75BC' }}>{productObj.store?.name}</h5>
         </Link>
         <Card className={classes.card}>{typeof productObj.image === 'string' && <CardMedia className={classes.media} image={productObj.image} title={productObj.title} />}</Card>
       </div>
@@ -118,20 +120,15 @@ export default function ProductDetails({ productObj }) {
         </Typography>
         <div className={classes.quantity}>
           <Typography variant="h5">{formatCurrency(productObj.price)}</Typography>
-          {productObj.inventory > 0 ? (
-            <>
-              <Button disabled={quantity === 1} onClick={handleDecrement}>
-                -
-              </Button>
-              <span>{quantity}</span>
-              <Button disabled={quantity + 1 > productObj.inventory} onClick={handleIncrement}>
-                +
-              </Button>
-            </>
-          ) : (
-            ''
-          )}
-          <Button onClick={addToCart} disabled={productObj.inventory <= 0}>
+          <Button disabled={quantity === 1} onClick={handleDecrement}>
+            -
+          </Button>
+          <span>{quantity}</span>
+          <Button disabled={quantity + 1 > productObj.inventory || !user.id} onClick={handleIncrement}>
+            +
+          </Button>
+
+          <Button onClick={addToCart} disabled={productObj.inventory <= 0 || !user.id}>
             <AddShoppingCartIcon fontSize="large" />
           </Button>
           {productObj.inventory <= 0 ? <Badge badgeContent="Out of Stock" /> : ''}
@@ -152,7 +149,10 @@ ProductDetails.propTypes = {
       id: PropTypes.number,
     }),
     price: PropTypes.number,
-    productType: PropTypes.string,
+    productType: PropTypes.shape({
+      id: PropTypes.number,
+      label: PropTypes.string,
+    }),
     image: PropTypes.string,
     inventory: PropTypes.number,
   }).isRequired,
