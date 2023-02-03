@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PaymentMethodsTable from '../../components/user/PaymentMethodsTable';
 import UserInfoCard from '../../components/user/UserInfoCard';
-import CustomerOrdersTable from '../../components/orders/CustomerOrderTable';
+import OrdersTable from '../../components/orders/OrderTable';
 import { useAuth } from '../../utils/context/authContext';
 import { getCompleteOrdersByCustomer } from '../../utils/data/orderData';
 import { getCustomersPaymentMethods } from '../../utils/data/paymentMethodData';
@@ -28,7 +28,7 @@ export default function UserView() {
     <div className="userView">
       <div className="userInfoCard-orderHistory-container">
         <UserInfoCard className="userInfoCard" userObj={user} />
-        <CustomerOrdersTable className="orderHistory" orders={orders} />
+        <OrdersTable className="orderHistory" orders={orders} />
       </div>
       <PaymentMethodsTable className="paymentMethods" paymentMethods={paymentMethods} onUpdate={getThePaymentMethods} />
     </div>

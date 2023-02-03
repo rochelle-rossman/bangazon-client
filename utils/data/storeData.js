@@ -28,4 +28,32 @@ const getStoreBySeller = (sellerId) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
-export { getStores, getSingleStore, getStoreBySeller };
+const createStore = (storeObj) => new Promise((resolve, reject) => {
+  const store = {
+    seller: storeObj.seller,
+    name: storeObj.name,
+  };
+  fetch(`${dbUrl}/stores`, {
+    method: 'POST',
+    body: JSON.stringify(store),
+    headers: { 'Content-Type': 'application/json' },
+  })
+    .then((response) => resolve(response.json()))
+    .catch((error) => reject(error));
+});
+
+const updateStore = (storeObj, storeId) => new Promise((resolve, reject) => {
+  const store = {
+    name: storeObj.name,
+  };
+  fetch(`${dbUrl}/stores/${storeId}`, {
+    method: 'PUT',
+    body: JSON.stringify(store),
+    headers: { 'content-type': 'application/json' },
+  }).then((response) => resolve(response))
+    .catch((error) => reject(error));
+});
+
+export {
+  getStores, getSingleStore, getStoreBySeller, createStore, updateStore,
+};

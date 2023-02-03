@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 function UserInfoCard({ userObj }) {
   const router = useRouter();
   return (
-    <Card sx={{ minWidth: 275 }}>
+    <Card sx={{ minWidth: 275, margin: 2 }}>
       <CardContent>
         <Typography sx={{ mb: 1.5 }} variant="h5" component="div">
           {userObj.first_name} {userObj.last_name}
@@ -23,7 +23,7 @@ function UserInfoCard({ userObj }) {
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
           {userObj.state}, {userObj.zipcode}
         </Typography>
-        <Button onClick={() => router.push(`/users/edit/${userObj.id}`)}>Update Account Info</Button>
+        <Button onClick={() => router.push(`/users/edit/${userObj.id}`)}>Update Profile</Button>
       </CardContent>
     </Card>
   );

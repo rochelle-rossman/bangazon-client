@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
-import { createProduct, updateProduct } from '../../utils/data/productData';
+import { createProduct, getSingleProduct, updateProduct } from '../../utils/data/productData';
 import { useAuth } from '../../utils/context/authContext';
 import { getStoreBySeller } from '../../utils/data/storeData';
 import getCategories from '../../utils/data/categoryData';
@@ -28,12 +28,15 @@ function ProductForm({ product }) {
   const [selectedCategory, setSelectedCategory] = useState(product?.productType ? product.productType : '');
 
   useEffect(() => {
+    if (product.id) {
+      getSingleProduct(product.id).then(setFormData);
+    }
     if (product?.productType) {
-      setSelectedCategory(product.productType);
+      setSelectedCategory(product.productType.id);
     }
     getStoreBySeller(user.id).then((store) => setSeller(store));
     getCategories().then(setCategories);
-  }, [user]);
+  }, [user, product]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,6 +45,7 @@ function ProductForm({ product }) {
       [name]: value,
     }));
   };
+
   const handleSelectChange = (e) => {
     setSelectedCategory(e.target.value);
   };
@@ -49,13 +53,13 @@ function ProductForm({ product }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (product.id) {
-      updateProduct(formData, product.id);
-      router.push(`../product/${product.id}`);
+      updateProduct({ ...formData, productType: selectedCategory }, product.id);
+      router.push(`/users/store/${user.id}`);
     } else {
       const [{ id }] = seller;
-      const newProduct = { ...formData, store: id, productType: selectedCategory };
+      const newProduct = { ...formData, store: id, productType: { id: selectedCategory } };
       createProduct(newProduct);
-      router.push('/');
+      router.push(`/users/store/${user.id}`);
     }
   };
 
@@ -63,7 +67,7 @@ function ProductForm({ product }) {
     <form onSubmit={handleSubmit}>
       <Box
         sx={{
-          '& > :not(style)': { m: 1, width: '90%' },
+          '& > :not(style)': { m: 1, width: '90%', marginTop: '15px' },
         }}
         autoComplete="off"
       >
@@ -84,7 +88,7 @@ function ProductForm({ product }) {
         </FormControl>
       </Box>
       <Button type="submit" variant="contained" color="primary">
-        Create Product
+        {product.id ? ('Update Product') : ('Add Product')}
       </Button>
     </form>
   );
@@ -93,15 +97,15 @@ function ProductForm({ product }) {
 ProductForm.propTypes = {
   product: PropTypes.shape({
     id: PropTypes.number,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    price: PropTypes.number,
+    image: PropTypes.string,
     store: PropTypes.shape({
-      id: PropTypes.number.isRequired,
+      id: PropTypes.number,
     }),
-    productType: PropTypes.string.isRequired,
-    inventory: PropTypes.number.isRequired,
+    productType: PropTypes.string,
+    inventory: PropTypes.number,
   }),
 };
 

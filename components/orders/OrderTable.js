@@ -1,13 +1,27 @@
 import PropTypes from 'prop-types';
 import {
-  Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper,
+  Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Button,
 } from '@mui/material';
+import { makeStyles } from '@material-ui/styles';
+import Tooltip from '@mui/material/Tooltip';
+import { useRouter } from 'next/router';
 import formatCurrency from '../../utils/formatCurrency';
 
-export default function CustomerOrdersTable({ orders }) {
+const useStyles = makeStyles({
+  tableContainer: {
+    height: '300px',
+    overflow: 'auto',
+    marginTop: '10px',
+  },
+});
+
+export default function OrdersTable({ orders }) {
+  const classes = useStyles();
+  const router = useRouter();
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 350 }} size="small">
+    <TableContainer className={classes.tableContainer}>
+      <h3>Order History</h3>
+      <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>
@@ -23,9 +37,11 @@ export default function CustomerOrdersTable({ orders }) {
         </TableHead>
         <TableBody>
           {orders.map((order) => (
-            <TableRow key={order.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+            <TableRow key={order.id}>
               <TableCell component="th" scope="row">
-                {order.id}
+                <Tooltip title="View Details" placement="right">
+                  <Button onClick={() => router.push(`/users/orders/${order.id}`)}>{order.id}</Button>
+                </Tooltip>
               </TableCell>
               <TableCell align="right">{order.status}</TableCell>
               <TableCell align="right">{formatCurrency(order.total)}</TableCell>
@@ -37,7 +53,7 @@ export default function CustomerOrdersTable({ orders }) {
   );
 }
 
-CustomerOrdersTable.propTypes = {
+OrdersTable.propTypes = {
   orders: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
