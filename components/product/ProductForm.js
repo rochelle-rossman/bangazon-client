@@ -104,7 +104,10 @@ ProductForm.propTypes = {
     store: PropTypes.shape({
       id: PropTypes.number,
     }),
-    productType: PropTypes.string,
+    productType: PropTypes.shape({
+      id: PropTypes.number,
+      label: PropTypes.string,
+    }),
     inventory: PropTypes.number,
   }),
 };

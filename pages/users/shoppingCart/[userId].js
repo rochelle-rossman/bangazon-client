@@ -50,10 +50,13 @@ export default function ShoppingCartView() {
     }).then(() => setOpenOrder(updatedProductOrders));
   };
 
-  const handleDelete = (productOrderId) => {
-    deleteProductOrder(productOrderId).then(() => {
-      setOpenOrder(openOrder.filter((productOrder) => productOrder.id !== productOrderId));
-    });
+  const handleDelete = (productId) => {
+    const productOrderToUpdate = openOrder.find((productOrder) => productOrder.product.id === productId);
+    if (productOrderToUpdate) {
+      deleteProductOrder(productOrderToUpdate.id).then(() => {
+        setOpenOrder(openOrder.filter((productOrder) => productOrder.id !== productOrderToUpdate.id));
+      });
+    }
   };
 
   return (
