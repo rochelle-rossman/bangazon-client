@@ -21,12 +21,12 @@ function Home() {
     getProducts().then((productsArr) => {
       setProducts(productsArr);
       setFilteredProducts(productsArr);
+      getCategories().then(setCategories);
     });
   };
 
   useEffect(() => {
     getAllProducts();
-    getCategories().then(setCategories);
   }, []);
 
   const handleCategoryClick = (categoryId) => {
@@ -55,7 +55,7 @@ function Home() {
   return (
     <div className="home-container">
       {user && !user.id ? (
-        <RegistrationForm onUpdate={getAllProducts} />
+        <RegistrationForm user={user} onUpdate={getAllProducts} />
       ) : (
         <>
           <SearchField products={products} setFilteredProducts={setFilteredProducts} />

@@ -57,7 +57,7 @@ function RegistrationForm({ user, onUpdate }) {
       updateUser(user.id, { ...formData, state: selectedState });
       router.push(`../../users/${user.id}`);
     } else {
-      registerUser(user, { ...formData, state: selectedState }).then(() => onUpdate(user.uid));
+      registerUser(user, { ...formData, state: selectedState, uid: user.uid }).then(() => onUpdate(user.uid));
     }
   };
 

@@ -26,7 +26,7 @@ const registerUser = (user, userInfo) => new Promise((resolve, reject) => {
     street_address: userInfo?.streetAddress,
     city: userInfo?.city,
     state: userInfo?.state,
-    zip: userInfo?.zip,
+    zipcode: userInfo?.zipcode,
     created_on: new Date(new Date().setDate(new Date().getDate())).toISOString().substring(0, 10),
   };
   fetch(`${clientCredentials.databaseURL}/register`, {
